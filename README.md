@@ -18,7 +18,7 @@ git commit -m "-"
 
 git push
 
-##Povezava DHT22 z ESP
+## Povezava DHT22 z NodeMcu ESP8266
 
 ![alt text](https://github.com/dkmet/weather-station/blob/master/images/nodeMcu_dht22.png)
 
