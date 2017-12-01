@@ -6,7 +6,7 @@ Oprema:
 
 -ESP NodeMcu 12 (0.9v)
 
--dht22 (senzor vlage in temperature)ž
+-dht22 (senzor vlage in temperature)
 
 ## Navodila za delo z github cli
 
