@@ -31,3 +31,9 @@ git add README.md
 git commit -m "-"
 
 git push
+
+## Zunanje povezave
+
+[Deep-Sleep](https://www.losant.com/blog/making-the-esp8266-low-powered-with-deep-sleep)
+
+[NodeMCU - DHT 11](http://www.iotlearning.net/code/esp8266-code/nodemcu-web-server-showing-dht11-data.php#codesyntax_1)
