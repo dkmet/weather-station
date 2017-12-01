@@ -10,3 +10,9 @@ Oprema:
 
 ## Navodila za delo z github cli
 
+git add README.md
+
+git commit -m "-"
+
+git push
+
