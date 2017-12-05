@@ -23,6 +23,8 @@ Nastavitve se nahajajo v datoteki "settings.h", ob datoteki weather-station.ino.
 #define time_interval_min 1
 const String weather_location= "ljubljana";
 ```
+## Upload kode
+Pred uploadom kode je potrebno izkllučiti deep sleep RST -D0, na ESPju
 
 ## Navodila za delo z github cli
 
