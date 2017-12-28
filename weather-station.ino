@@ -62,15 +62,14 @@ void sendData(){
   sleepIteraction =0;
   if(isnan(t)){
     Serial.print("Branje podatkov iz senzorja .");  
-    while(isnan(t) && sleepIteraction < 15){
+    while(isnan(t) && sleepIteraction < 30){
       delay(500);
       Serial.print(".");
       h = dht.readHumidity();
       t = dht.readTemperature();
       sleepIteraction = sleepIteraction +1;
     }  
-  }else{
-     Serial.println("");  
+    Serial.println("");  
   }
  
   
