@@ -8,41 +8,72 @@
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
- 
-  Serial.begin(115200);                 //Serial connection
-  WiFi.begin(wifi_ssid, wifi_password);   //WiFi connection
-  dht.begin(); 
+  Serial.begin(115200);
+  Serial.setTimeout(2000);
 
-  // povezovanje na WIFI
-  Serial.print("Povezujem se na wifi."); 
-  while (WiFi.status() != WL_CONNECTED) { 
-    delay(500);
-    Serial.print("."); 
-  }
+  // Počakam da se postavi ESP
+  while(!Serial) { }  
+  Serial.println("Zagon");
   
-  Serial.println(""); 
-  Serial.print("IP Vremeneske postaje: "); 
-  Serial.println(WiFi.localIP()); 
- 
+
+  // pošljem podatke
+  sendData();
+  
+  Serial.println("Spanje " +  String(time_interval_min)+ " min");
+  Serial.println("");
+  ESP.deepSleep(60e6 * time_interval_min); // spanje time_interval_min minut  
 }
-void loop() {
- String payload; // vrnje niz iz strežnika  
- int httpCode;  // odgovor iz strežniaka
-  
- if(WiFi.status()== WL_CONNECTED){   
 
- // inicializacija:
- // deklariram HTTP clienta (http),
- // določim url za povezavo,
- // dodam json header
-   HTTPClient http;    
-   http.begin(server_url); 
-   http.addHeader("Content-Type", "application/json"); 
+void sendData(){
+  String payload; // vrnje niz iz strežnika  
+  int httpCode;  // odgovor iz strežniaka
+  float h;     // vlaga
+  float t;     //temperatura
+  int sleepIteraction;        //ponovitve spanja
+  // Zaženem DHT senzor
+   dht.begin(); 
  
- // preberem podatke iz DHT senzorja
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
+ // Povežem na WIFI
+  Serial.print("Povezujem se na wifi."); 
+  WiFi.begin(wifi_ssid, wifi_password);  
+  unsigned long wifiConnectStart = millis(); 
+  while (WiFi.status() != WL_CONNECTED) {
+   if (WiFi.status() == WL_CONNECT_FAILED) {
+      Serial.println("Napaka: Neuspešna povezava. Prosimo preveriti podatke za brezžično povezavo.");
+      delay(10000);
+   }
 
+    delay(500);
+    Serial.print(".");
+    if (millis() - wifiConnectStart > 15000) {
+      Serial.println("Neuspešna povezava do internega");
+      return;
+    }
+  }
+  Serial.println("");  
+  Serial.println("WiFi povezava je vzpostavljena");
+  Serial.print("Naslov IP: ");
+  Serial.println(WiFi.localIP());
+
+      // preberem podatke iz DHT senzorja
+  
+  h = dht.readHumidity();
+  t = dht.readTemperature();
+  sleepIteraction =0;
+  if(isnan(t)){
+    Serial.print("Branje podatkov iz senzorja .");  
+    while(isnan(t) && sleepIteraction < 15){
+      delay(500);
+      Serial.print(".");
+      h = dht.readHumidity();
+      t = dht.readTemperature();
+      sleepIteraction = sleepIteraction +1;
+    }  
+  }else{
+     Serial.println("");  
+  }
+ 
+  
   // v primeru napake pri branju senzorja DHT
   // izpišem napako
   // zaprem http senzor
@@ -50,17 +81,19 @@ void loop() {
   // prekinem nadaljevanje izvajanja
    if (isnan(h) || isnan(t)) {
     Serial.println("Napaka: Napaka pri branju podatkov iz senzorja.");
-    http.end();  //Close connection
-    delay(10000);  //Send a request every 30 seconds      
     return;
   }
- 
+
+  // Povezava do strežnika
+  HTTPClient http;
+  http.begin(server_url); 
+  http.addHeader("Content-Type", "application/json"); 
+  
   // pošljem temperaturo
   // v primeru da je prišlo do napake, izpišem napako, drugale temperaturo
    httpCode = http.POST("{\"requestParams\":{\"module\":\"VREME\",\"doctypeindex\":[21],\"senzortype\":[\"1\"],\"idlokacija\":[\"4#" + weather_location + "\"],\"vrednost\":["+ String(t) +"]}}");
    payload = http.getString();                  //Get the response payload  
    if(httpCode != 200){    
-    Serial.print("Napaka: ");
     Serial.println(payload);    //Print request response payload
    }else{
     Serial.println("Temperatura: "+String(t)+ " C");
@@ -74,7 +107,6 @@ void loop() {
      payload = http.getString();                  //Get the response payload  
     if(httpCode != 200){
       payload = http.getString();         
-      Serial.print("Napaka: ");
       Serial.println(payload);   
     }else{
       Serial.println("Vlaga: "+String(h)+ "%");
@@ -82,13 +114,9 @@ void loop() {
 
    // Zaprem HTTP clienta
    http.end(); 
+}
 
- // Izpišem morebiten problem z WIFI povezavo
- }else{
- 
-    Serial.println("Napaka: Neuspešno povezava v interne.");   
- 
- }
 
- // Izvajam meritev na vsakin time_interval_min minut
-  delay(60000 * time_interval_min);  }
+void loop() {
+}
+
