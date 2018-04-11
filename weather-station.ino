@@ -31,6 +31,7 @@ void sendData(){
   float t;     //temperatura
   int sleepIteraction;        //ponovitve spanja
   // Zaženem DHT senzor
+  
    dht.begin(); 
  
  // Povežem na WIFI
@@ -110,8 +111,9 @@ void sendData(){
     }else{
       Serial.println("Vlaga: "+String(h)+ "%");
     }
-
-   // Zaprem HTTP clienta
+  
+     
+     // Zaprem HTTP clienta
    http.end(); 
 }
 
