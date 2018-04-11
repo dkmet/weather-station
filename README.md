@@ -42,4 +42,5 @@ git push
 [NodeMCU - DHT 11](http://www.iotlearning.net/code/esp8266-code/nodemcu-web-server-showing-dht11-data.php#codesyntax_1)
 
 [DHT22Tesp](https://github.com/beegee-tokyo/DHTesp)
+
 [POvezava z baterijo] (http://henrysbench.capnfatz.com/henrys-bench/arduino-projects-tips-and-more/powering-the-esp-12e-nodemcu-development-board/)
