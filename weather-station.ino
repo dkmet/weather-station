@@ -3,16 +3,21 @@
 #include "DHT.h"
 #include "settings.h"
 
-#define DHTPIN D4     // what pin we're connected to
+// #define DHTPIN D4     // what pin we're connected to
+#define DHTPIN D9     // RX pin
 #define DHTTYPE DHT22   // DHT 22
 DHT dht(DHTPIN, DHTTYPE);
 
+
+
 void setup() {
+
   Serial.begin(115200);
-  Serial.setTimeout(2000);
+ // Serial.setTimeout(10000);
 
   // Počakam da se postavi ESP
   while(!Serial) { }  
+  Serial.println("");
   Serial.println("Zagon");
   
 
@@ -107,7 +112,7 @@ void sendData(){
      payload = http.getString();                  //Get the response payload  
     if(httpCode != 200){
       payload = http.getString();         
-      Serial.println(payload);   
+       Serial.println(payload);   
     }else{
       Serial.println("Vlaga: "+String(h)+ "%");
     }

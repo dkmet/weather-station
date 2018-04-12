@@ -44,5 +44,3 @@ git push
 [DHT22Tesp](https://github.com/beegee-tokyo/DHTesp)
 
 [Povezava z baterijo](http://henrysbench.capnfatz.com/henrys-bench/arduino-projects-tips-and-more/powering-the-esp-12e-nodemcu-development-board/)
-
-[Problem z deep sleep](https://www.letscontrolit.com/forum/viewtopic.php?f=5&t=2316)
